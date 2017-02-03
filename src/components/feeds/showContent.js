@@ -48,38 +48,41 @@ class ShowContent  extends React.Component{
      */
     getContentJson(startIndex, endIndex, isLoadingMore) {
 
-        // let sourceUrl = 'https://hacker-news.firebaseio.com/v0/showstories.json';
-        // $.get(sourceUrl, function (response) {
-        //
-        //     if (response && response.length == 0) {
-        //         this.hideLoader();
-        //         return;
-        //     }
+        for(let i = startIndex; i <= endIndex; i++) {
 
-            for(let i = startIndex; i <= endIndex; i++) {
+            if (i == endIndex){
+                /** 当加载到10的时候（第一轮）隐藏加载动画，注意从0开始的*/
+                this.hideLoader();
 
-                if (i == endIndex){
-                    /** 当加载到10的时候（第一轮）隐藏加载动画，注意从0开始的*/
-                    this.hideLoader();
-
-                    /** 隐藏底部的加载动画，针对的是第二轮及以上加载，因为第一轮加载的时候isLoadingMore默认false*/
-                    if (isLoadingMore) {
-                        this.setState({ isLoadingMore: false });
-                    }
-
-                    /** 本轮加载完了才能进行下一轮的请求*/
-                    this.loadMore(endIndex);
-                    return false;
+                /** 隐藏底部的加载动画，针对的是第二轮及以上加载，因为第一轮加载的时候isLoadingMore默认false*/
+                if (isLoadingMore) {
+                    this.setState({ isLoadingMore: false });
                 }
 
-                this.getContentData(this.jsonData[i]);
+                /** 本轮加载完了才能进行下一轮的请求*/
+                console.log('before loadmore');
+                this.loadMore(endIndex);
+                console.log('after loadmore');
+                return false;
             }
-
-        // }.bind(this));
+            /** 传入额外的i，即代表当前id的索引*/
+            this.getContentData(this.jsonData[i],i);
+        }
     }
 
-    getContentData(id) {
-        console.log('id: '+id);
+    /**
+     * 根据条目id获取具体数据
+     * @param id 条目的id
+     * @param idIndex id的索引位置
+     */
+    getContentData(id, idIndex) {
+        console.log('idIndex: '+ idIndex+' id: '+id);
+        /** 注意这里要减去1个，因为索引是从0开始的*/
+        if(idIndex > this.jsonData.length-1){
+            console.log('超出了 '+idIndex);
+            return false;
+        }
+
         let contentUrl = 'https://hacker-news.firebaseio.com/v0/item/' + id + '.json';
         $.get(contentUrl, function (response) {
 
@@ -87,12 +90,13 @@ class ShowContent  extends React.Component{
              * 一轮加载是10个，但是总的数目不是刚好是10的倍数，比如有63个，最后10个只能到第三个（第四个）
              * 这个时候请求也会发，但是肯定返回为空，下面的判断就是为了处理这种情况，到这个时候就是表示json中的所有都已经加载了
              * 此处逻辑可以优化，可以在请求前就判断出已经超出json中的数据范围，这样就不用发无用的请求, mark
+             * 已解决，在上面加了判断
              */
-            if (response.length == 0) {
-                this.hideLoader();
-                return;
-            }
-
+            // if (response.length == 0) {
+            //     this.hideLoader();
+            //     return;
+            // }
+            console.log('idIndex: '+idIndex);
             let domain = response.url ? response.url.split(':')[1].split('//')[1].split('/')[0] : '';
             response.domain = domain;
             this.setState({newStories : this.state.newStories.concat(response)});
@@ -109,6 +113,11 @@ class ShowContent  extends React.Component{
      */
     loadMore(starIndex) {
         $(window).unbind('scroll');
+
+        /** 新增：json中的数据项都请求完毕后不需要再监听scroll，然后再去请求更多数据*/
+        if(starIndex > this.jsonData.length){
+            return false;
+        }
         $(window).bind('scroll', function () {
 
             if ($(window).scrollTop() == $(document).height() - $(window).height()) {
