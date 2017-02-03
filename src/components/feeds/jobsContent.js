@@ -2,171 +2,152 @@ import React from 'react';
 import Spinner from '../spinner';
 import { Link } from 'react-router';
 import $ from 'jquery';
+import {convertTime} from '../../util/util.js';
 
 const pagination = 10;
 
-const JobsContent = React.createClass({
-    getInitialState() {
-        return {
+class JobsContent extends React.Component{
+
+    constructor(props) {
+        super(props);
+        this.jsonData = [];
+        this.state = {
             newStories: [],
             isLoading: true,
             isLoadingMore: false
-        }
-    },
+        };
+    }
 
-    showLoader() {
-        this.setState({
-            isLoading: true
-        });
-    },
-
+    /** 隐藏加载状态 */
     hideLoader() {
-        this.setState({
-            isLoading: false
-        });
-    },
+        this.setState({isLoading: false});
+    }
 
+    /**
+     * 备注：这里得到的jobstories的数据个数是未定的
+     *  返回的数据类似：[13549604, 13548512, 13547601, 13546090, 13543852 ...]
+     */
     componentDidMount() {
-        this.getContentJson(0, pagination, false);
-    },
-
-    getContentJson(startIndex, pagination, isLoadingMore) {
-
-        let sourceUrl = 'https://hacker-news.firebaseio.com/v0/jobstories.json';
-
+        const sourceUrl = 'https://hacker-news.firebaseio.com/v0/jobstories.json';
         $.get(sourceUrl, function (response) {
-
+            /** 如果返回数据为空，表示无数据，则隐藏加载动画*/
             if (response && response.length == 0) {
                 this.hideLoader();
                 return;
             }
 
-            for(let i = startIndex; i <= pagination; i++) {
-                if (i == pagination) {
+            this.jsonData = response;
 
-                    if(this.isMounted()) this.hideLoader();
+            let startIndex = 0;
+            let endIndex = startIndex + pagination;
+            this.getContentJson(startIndex, endIndex, false);
+        }.bind(this));
+    }
 
-                    if (this.isMounted() && isLoadingMore) this.setState({ isLoadingMore: false });
+    getContentJson(startIndex, endIndex, isLoadingMore) {
 
-                    this.loadMore(pagination);
-                    return false;
+        /** 根据jobstories中的id数据，请求每一个具体数据*/
+        for(let i = startIndex; i <= endIndex; i++) {
+            if (i == endIndex) {
+                /** 当加载到10的时候（第一轮）隐藏加载动画，注意从0开始的*/
+                this.hideLoader();
+
+                /** 隐藏底部的加载动画，针对的是第二轮及以上加载，因为第一轮加载的时候isLoadingMore默认false*/
+                if (isLoadingMore){
+                    this.setState({ isLoadingMore: false });
                 }
 
-                this.getContentData(response[i], pagination);
+                this.loadMore(endIndex);
+                return false;
             }
+            /** 传入额外的i，即代表当前id的索引*/
+            this.getContentData(this.jsonData[i], i);
+        }
+    }
 
-        }.bind(this));
-    },
-
-    getContentData(id) {
-
+    /**
+     * 获取单条消息
+     * Api: https://hacker-news.firebaseio.com/v0/item/{id}.json'
+     */
+    getContentData(id, idIndex) {
+        /**
+         * 处理无效请求
+         * 注意这里要减去1个，因为索引是从0开始的
+         **/
+        if(idIndex > this.jsonData.length-1){
+            return false;
+        }
         let contentUrl = 'https://hacker-news.firebaseio.com/v0/item/' + id + '.json';
-
         $.get(contentUrl, function (response) {
 
-            if (response  == null) {
-                if (this.isMounted()) {
-                    this.hideLoader();
-                }
-                return;
-            }
-
             let domain = response.url ? response.url.split(':')[1].split('//')[1].split('/')[0] : '';
-
             response.domain = domain;
-
-            this.setState({newStories : this.state.newStories.concat(response)});
+            this.setState({
+                newStories : this.state.newStories.concat(response)
+            });
 
         }.bind(this));
-    },
+    }
 
-    convertTime(time) {
-        let d = new Date();
-        let currentTime = Math.floor(d.getTime() / 1000);
-        let seconds = currentTime - time;
 
-        // more that two days
-        if (seconds > 2*24*3600) {
-            return 'a few days ago';
-        }
-
-        // a day
-        if (seconds > 24*3600) {
-            return 'yesterday';
-        }
-
-        if (seconds > 3600) {
-            return 'a few hours ago';
-        }
-
-        if (seconds > 1800) {
-            return 'Half an hour ago';
-        }
-
-        if (seconds > 60) {
-            return Math.floor(seconds/60) + ' minutes ago';
-        }
-    },
-
-    loadMore(pagination) {
+    loadMore(startIndex) {
 
         $(window).unbind('scroll');
+        /** 新增：json中的数据项都请求完毕后不需要再监听scroll，然后再去请求更多数据*/
+        if(startIndex > this.jsonData.length-1){
+            return false;
+        }
 
         $(window).bind('scroll', function () {
-
             if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-                let previousCount = pagination + 1;
-                pagination = pagination + 11;
-
+                let endIndex = startIndex + pagination;
                 this.setState({isLoadingMore : true}); //To show loader at the bottom
-
-                this.getContentJson(previousCount, pagination, true);
+                this.getContentJson(startIndex, endIndex, true);
             }
         }.bind(this));
-    },
+    }
 
-    changeMenu() {
-        $('.menu li').removeClass('selected');
-    },
-
-    render() {
-        var newStories = this.state.newStories.map((response, index) => {
-
-            let searchQuery = 'https://www.google.co.in/search?q=' + response.title;
-
+    /**
+     * 获取当前的条目信息
+     */
+    getNewStories(){
+        return this.state.newStories.map((response, index) => {
             return (
                 <div key={index}>
                     <div className="content">
-                        <a className="title" target="_blank" href={response.url}>{response.title} </a>
+                        <a className="title" target="_blank" href={response.url}>
+                            {response.title}
+                        </a>
 
-                        <div className={response.domain ? 'domain': 'hide'}> (<a href={'http://' + response.domain} title="Domain">{response.domain}</a>)</div>
+                        <div className={response.domain ? 'domain': 'hide'}>
+                            (<a href={'http://' + response.domain} title="Domain">{response.domain}</a>)
+                        </div>
 
                         <div className="bottom-content">
                             <span>{response.score} {(response.score > 1) ? ' points' : ' point'} </span>
-                            <span>by
-                <Link onClick={this.changeMenu} className="author" to={'/user/' + response.by}>{response.by}</Link>
-              </span>
-                            <span> | {this.convertTime(response.time)} </span>
+                            <span>by <Link className="author" to={'/user/' + response.by}>{response.by}</Link></span>
+                            <span> | {convertTime(response.time)} </span>
                         </div>
                     </div>
                 </div>
             )
-        }, this);
+        });
+    }
+
+    render() {
 
         return (
             <div className="content-container">
                 <div className={this.state.isLoading ? '': 'hide'}>
                     <Spinner />
                 </div>
-
-                {newStories}
-                {this.props.children}
+                {this.getNewStories()}
                 <div className={ this.state.isLoadingMore ? 'mtop50' : 'hide'}>
                     <Spinner />
                 </div>
             </div>
         )
     }
-});
+}
 
-module.exports = JobsContent;
+export default JobsContent;
