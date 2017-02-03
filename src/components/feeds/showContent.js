@@ -10,6 +10,7 @@ class ShowContent  extends React.Component{
 
     constructor(props){
         super(props);
+        this.jsonData = [];
         this.state = {
             newStories: [],
             isLoading: true,
@@ -24,10 +25,19 @@ class ShowContent  extends React.Component{
     }
 
     componentDidMount() {
-        /** 详细列出来*/
-        let startIndex = 0;
-        let endIndex = startIndex + pagination;
-        this.getContentJson(startIndex, endIndex, false);
+        let sourceUrl = 'https://hacker-news.firebaseio.com/v0/showstories.json';
+        $.get(sourceUrl, function (response) {
+            if (response && response.length == 0) {
+                this.hideLoader();
+                return;
+            }
+            this.jsonData = response;
+
+            /** 详细列出来*/
+            let startIndex = 0;
+            let endIndex = startIndex + pagination;
+            this.getContentJson(startIndex, endIndex, false);
+        }.bind(this));
     }
 
     /**
@@ -38,13 +48,13 @@ class ShowContent  extends React.Component{
      */
     getContentJson(startIndex, endIndex, isLoadingMore) {
 
-        let sourceUrl = 'https://hacker-news.firebaseio.com/v0/showstories.json';
-        $.get(sourceUrl, function (response) {
-
-            if (response && response.length == 0) {
-                this.hideLoader();
-                return;
-            }
+        // let sourceUrl = 'https://hacker-news.firebaseio.com/v0/showstories.json';
+        // $.get(sourceUrl, function (response) {
+        //
+        //     if (response && response.length == 0) {
+        //         this.hideLoader();
+        //         return;
+        //     }
 
             for(let i = startIndex; i <= endIndex; i++) {
 
@@ -62,10 +72,10 @@ class ShowContent  extends React.Component{
                     return false;
                 }
 
-                this.getContentData(response[i]);
+                this.getContentData(this.jsonData[i]);
             }
 
-        }.bind(this));
+        // }.bind(this));
     }
 
     getContentData(id) {
