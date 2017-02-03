@@ -1,11 +1,24 @@
 import React from 'react';
 
-let PageNotFound = React.createClass({
-    render() {
-        return (
-            <div className="page-not-found">Page not found</div>
-        )
-    }
-});
+const PageNotFound = ()=>(
+    <div className="page-not-found">Page not found</div>
+);
 
-module.exports = PageNotFound;
+export default PageNotFound;
+
+
+/**
+ * 1. 在PageNotFound组件的this.props可以获取以下属性
+  {
+    children:null
+    location: Object
+    params: Object
+    route: Object
+    routeParams: Object
+    router: Object
+    routes: Array
+  }
+
+ 2. 改为了函数式组件
+ *
+ * */

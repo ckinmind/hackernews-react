@@ -1,66 +1,16 @@
-import React from 'react'
-import NewContent from './feeds/newContent'
-import ShowContent from './feeds/showContent'
-import JobsContent from './feeds/jobsContent'
-import { Link } from 'react-router'
+import React from 'react';
+import { Link } from 'react-router';
 
-let Menu = React.createClass({
-    getInitialState() {
-        return {
-            items: [{
-                name: 'new',
-                id: 1
-            },
-                {
-                    name: 'show',
-                    id: 2
-                },
-                {
-                    name: 'jobs',
-                    id: 3
-                },
-                {
-                    name: 'about',
-                    id: 4
-                }]
-        }
-    },
+const Menu = () => (
+    <div className="menu">
+        <ul>
+            <li><Link to='/new' activeClassName="selected"> new </Link></li>
+            <li><Link to='/show' activeClassName="selected"> show </Link></li>
+            <li><Link to='/jobs' activeClassName="selected"> jobs </Link></li>
+            <li><Link to='/about' activeClassName="selected"> about </Link></li>
+        </ul>
+    </div>
+);
 
-    changeMenu(index) {
-        let items = this.state.items;
 
-        items.map(function (item) {
-            item.selected = false;
-        });
-
-        items[index].selected = true;
-
-        this.setState({
-            items : items
-        });
-    },
-
-    menuChange() {
-        console.log('cem')
-    },
-
-    render() {
-        return (
-            <div className="menu">
-                <ul>
-                    {
-                        this.state.items.map(function(item, index) {
-                            return (
-                                <li key={ item.id }>
-                                    <Link to={ '/' + item.name } activeClassName="selected">{ item.name }</Link>
-                                </li>
-                            )
-                        }.bind(this))
-                    }
-                </ul>
-            </div>
-        );
-    }
-});
-
-module.exports = Menu;
+export default Menu;
