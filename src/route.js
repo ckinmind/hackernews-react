@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Route, Link, IndexRoute, Redirect ,hashHistory} from 'react-router';
+import { Router, Route, Link, IndexRoute, Redirect ,hashHistory, IndexRedirect} from 'react-router';
 
 import Menu from './components/menu';
 import NewContent from './components/feeds/newContent';
@@ -9,9 +9,6 @@ import AboutContent from './components/feeds/aboutContent';
 import Profile from './components/user/profile';
 import PageNotFound from './components/errorPage';
 import './styles/master.scss';
-
-//Target element to render the components
-let target = document.getElementById('main-container');
 
 
 let Header = React.createClass({
@@ -33,22 +30,12 @@ const App = ({children})=>(
     </div>
 );
 
-// Make a new component to render inside of Inbox
-const Message = React.createClass({
-    render() {
-        return <h3>Message</h3>
-    }
-});
-
-let redirectToChild = (location, replaceState) => {
-    replaceState(null, '/new');
-};
 
 //Render the components
 export default () => (
     <Router history={hashHistory}>
         <Route path="/" component={App} >
-            <IndexRoute  component={NewContent} onEnter={redirectToChild}/>
+            <IndexRedirect to="new" />
             <Route path="new" component={NewContent} />
             <Route path="show" component={ShowContent} />
             <Route path="jobs" component={JobsContent} />
@@ -58,8 +45,3 @@ export default () => (
         </Route>
     </Router>
 );
-
-
-/**
-
- * */
