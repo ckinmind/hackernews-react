@@ -1,8 +1,7 @@
 import React from 'react';
 import Spinner from '../spinner';
-import { Link } from 'react-router';
 import $ from 'jquery';
-import {convertTime} from '../../util/util.js';
+import Item from '../item';
 
 const pagination = 10;
 
@@ -135,21 +134,7 @@ class JobsContent extends React.Component{
         return this.state.newStories.map((response, index) => {
             return (
                 <div key={index}>
-                    <div className="content">
-                        <a className="title" target="_blank" href={response.url}>
-                            {response.title}
-                        </a>
-
-                        <div className={response.domain ? 'domain': 'hide'}>
-                            (<a href={'http://' + response.domain} title="Domain">{response.domain}</a>)
-                        </div>
-
-                        <div className="bottom-content">
-                            <span>{response.score} {(response.score > 1) ? ' points' : ' point'} </span>
-                            <span>by <Link className="author" to={'/user/' + response.by}>{response.by}</Link></span>
-                            <span> | {convertTime(response.time)} </span>
-                        </div>
-                    </div>
+                    <Item response={response}/>
                 </div>
             )
         });
