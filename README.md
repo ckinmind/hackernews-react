@@ -7,6 +7,7 @@ hackernews的react版本
 - HackerNews的Api参考[这里](https://github.com/HackerNews/API)
 
 ## 版本更新
+- 【v1.1】: ES6改写,函数式组件，优化处理流程，详细更新说明 [issue #7](https://github.com/ckinmind/hackernews-react/issues/7)
 - 【v1.0】: 原始版本（基本同原项目）,详细更新说明 [issue #5](https://github.com/ckinmind/hackernews-react/issues/5)
 
 ## 如何开始
