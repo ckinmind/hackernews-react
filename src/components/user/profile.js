@@ -43,7 +43,6 @@ class Profile extends React.Component{
     }
 
     render() {
-        console.log(this.props);
         return (
             <div className="content profile-content">
                 <div className={this.state.isLoading ? 'spinner-container': 'hide'}>
