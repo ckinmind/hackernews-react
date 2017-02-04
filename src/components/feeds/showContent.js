@@ -82,9 +82,7 @@ class ShowContent  extends React.Component{
                 }
 
                 /** 本轮加载完了才能进行下一轮的请求*/
-                console.log('before loadmore');
                 this.loadMore(endIndex);
-                console.log('after loadmore');
                 return false;
             }
             /** 传入额外的i，即代表当前id的索引*/
@@ -98,10 +96,8 @@ class ShowContent  extends React.Component{
      * @param idIndex id的索引位置
      */
     getContentData(id, idIndex) {
-        console.log('idIndex: '+ idIndex+' id: '+id);
         /** 注意这里要减去1个，因为索引是从0开始的*/
         if(idIndex > this.jsonData.length-1){
-            console.log('超出了 '+idIndex);
             return false;
         }
 
