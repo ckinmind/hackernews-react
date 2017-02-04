@@ -11,6 +11,7 @@ class NewContent extends React.Component{
     constructor(props){
         super(props);
         this.jsonData = [];
+        this.isUnMount = false;
         this.state = {
             newStories: [],
             isLoading: true,
@@ -27,6 +28,12 @@ class NewContent extends React.Component{
     componentDidMount() {
         let sourceUrl = 'https://hacker-news.firebaseio.com/v0/newstories.json';
         $.get(sourceUrl, function (response) {
+
+            /** 这也是必须的，因为后面执行的getContentJson()中的hideLoader方法中也有setState,如果页面切换太快的，也会导致报错*/
+            if(this.isUnMount){
+                return;
+            }
+
             if (response && response.length == 0) {
                 this.hideLoader();
                 return;
@@ -37,6 +44,11 @@ class NewContent extends React.Component{
             let endIndex = startIndex + pagination;
             this.getContentJson(startIndex, endIndex, false);
         }.bind(this));
+    }
+
+    componentWillUnmount(){
+        this.isUnMount = true;
+        $(window).unbind('scroll');
     }
 
     getContentJson(startIndex, endIndex, isLoadingMore) {
@@ -65,8 +77,7 @@ class NewContent extends React.Component{
         let contentUrl = 'https://hacker-news.firebaseio.com/v0/item/' + id + '.json';
         $.get(contentUrl, function (response) {
 
-            if (response.length == 0) {
-                    this.hideLoader();
+            if(this.isUnMount){
                 return;
             }
 

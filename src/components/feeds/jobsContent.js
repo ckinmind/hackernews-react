@@ -11,6 +11,10 @@ class JobsContent extends React.Component{
     constructor(props) {
         super(props);
         this.jsonData = [];
+
+        /** 有两处判断*/
+        this.isUnMount = false;
+
         this.state = {
             newStories: [],
             isLoading: true,
@@ -30,6 +34,12 @@ class JobsContent extends React.Component{
     componentDidMount() {
         const sourceUrl = 'https://hacker-news.firebaseio.com/v0/jobstories.json';
         $.get(sourceUrl, function (response) {
+
+            /** 这也是必须的，因为后面执行的getContentJson()中的hideLoader方法中也有setState,如果页面切换太快的，也会导致报错*/
+            if(this.isUnMount){
+                return;
+            }
+
             /** 如果返回数据为空，表示无数据，则隐藏加载动画*/
             if (response && response.length == 0) {
                 this.hideLoader();
@@ -44,6 +54,11 @@ class JobsContent extends React.Component{
         }.bind(this));
     }
 
+    componentWillUnmount(){
+        this.isUnMount = true;
+        $(window).unbind('scroll');
+    }
+
     getContentJson(startIndex, endIndex, isLoadingMore) {
 
         /** 根据jobstories中的id数据，请求每一个具体数据*/
@@ -54,6 +69,7 @@ class JobsContent extends React.Component{
 
                 /** 隐藏底部的加载动画，针对的是第二轮及以上加载，因为第一轮加载的时候isLoadingMore默认false*/
                 if (isLoadingMore){
+                    console.log('isLoadingMore');
                     this.setState({ isLoadingMore: false });
                 }
 
@@ -79,6 +95,11 @@ class JobsContent extends React.Component{
         }
         let contentUrl = 'https://hacker-news.firebaseio.com/v0/item/' + id + '.json';
         $.get(contentUrl, function (response) {
+
+            /** 处理异步ajax的组件销毁后的情况*/
+            if(this.isUnMount){
+                return;
+            }
 
             let domain = response.url ? response.url.split(':')[1].split('//')[1].split('/')[0] : '';
             response.domain = domain;

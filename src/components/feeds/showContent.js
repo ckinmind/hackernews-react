@@ -11,6 +11,15 @@ class ShowContent  extends React.Component{
     constructor(props){
         super(props);
         this.jsonData = [];
+
+        /**
+         * 自己维持的状态，相当于ES5写法中的isMounted()方法
+         * 在componentWillUnmount中设为false
+         * 这个属性是为了处理ajax异步调用的问题
+         * 无法使用isMounted, 可能涉及
+         */
+        this.isUnMount = false;
+
         this.state = {
             newStories: [],
             isLoading: true,
@@ -27,10 +36,17 @@ class ShowContent  extends React.Component{
     componentDidMount() {
         let sourceUrl = 'https://hacker-news.firebaseio.com/v0/showstories.json';
         $.get(sourceUrl, function (response) {
+
+            /** 这也是必须的，因为后面执行的getContentJson()中的hideLoader方法中也有setState,如果页面切换太快的，也会导致报错*/
+            if(this.isUnMount){
+                return;
+            }
+
             if (response && response.length == 0) {
                 this.hideLoader();
                 return;
             }
+
             this.jsonData = response;
 
             /** 详细列出来*/
@@ -38,6 +54,12 @@ class ShowContent  extends React.Component{
             let endIndex = startIndex + pagination;
             this.getContentJson(startIndex, endIndex, false);
         }.bind(this));
+    }
+
+
+    componentWillUnmount(){
+        this.isUnMount = true;
+        $(window).unbind('scroll');
     }
 
     /**
@@ -96,7 +118,13 @@ class ShowContent  extends React.Component{
             //     this.hideLoader();
             //     return;
             // }
-            console.log('idIndex: '+idIndex);
+
+            /** 用于处理页面切换，原页面异步ajax问题，不这里组织会报错，因为后面设计setState操作，但是原组件已被销毁*/
+            if(this.isUnMount){
+                return;
+            }
+
+
             let domain = response.url ? response.url.split(':')[1].split('//')[1].split('/')[0] : '';
             response.domain = domain;
             this.setState({newStories : this.state.newStories.concat(response)});
