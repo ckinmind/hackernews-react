@@ -111,19 +111,19 @@ class ShowContent  extends React.Component{
      * 当滚动条触底时： $(window).scrollTop() =  $(document).height() - $(window).height()
      * 也即： $(document).height() = $(window).height() +  $(window).scrollTop()
      */
-    loadMore(starIndex) {
+    loadMore(startIndex) {
         $(window).unbind('scroll');
 
         /** 新增：json中的数据项都请求完毕后不需要再监听scroll，然后再去请求更多数据*/
-        if(starIndex > this.jsonData.length){
+        if(startIndex > this.jsonData.length-1){
             return false;
         }
         $(window).bind('scroll', function () {
 
             if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-                let endIndex = starIndex + pagination;
+                let endIndex = startIndex + pagination;
                 this.setState({isLoadingMore : true}); //To show loader at the bottom
-                this.getContentJson(starIndex, endIndex, true);
+                this.getContentJson(startIndex, endIndex, true);
             }
         }.bind(this));
     }
