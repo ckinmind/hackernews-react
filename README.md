@@ -1,5 +1,4 @@
-![](https://raw.githubusercontent.com/ckinmind/hackernews-react/master/src/images/screenshot.png)
-
+## hackernews-react
 hackernews的react版本,在线访问：[https://ckinmind.github.io/hackernews-react/](https://ckinmind.github.io/hackernews-react/)
 
 ## 技术栈
@@ -7,6 +6,9 @@ hackernews的react版本,在线访问：[https://ckinmind.github.io/hackernews-r
 - React-Router for routing
 - jQuery for ajax
 - webpack for building tool
+
+## Demo
+![](https://raw.githubusercontent.com/ckinmind/hackernews-react/master/src/images/screenshot.png)
 
 ## 项目说明
 - 本项目为学习自项(非原创), 原项目地址： [React-hacker-news](https://github.com/gokulkrishh/React-hacker-news)
