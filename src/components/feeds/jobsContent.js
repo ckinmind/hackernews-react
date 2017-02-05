@@ -68,7 +68,6 @@ class JobsContent extends React.Component{
 
                 /** 隐藏底部的加载动画，针对的是第二轮及以上加载，因为第一轮加载的时候isLoadingMore默认false*/
                 if (isLoadingMore){
-                    console.log('isLoadingMore');
                     this.setState({ isLoadingMore: false });
                 }
 

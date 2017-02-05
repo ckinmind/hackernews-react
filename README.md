@@ -1,5 +1,5 @@
 # hackernews-react
-hackernews的react版本
+hackernews的react版本,在线访问：[https://ckinmind.github.io/hackernews-react/](https://ckinmind.github.io/hackernews-react/)
 
 ## 项目说明
 - 本项目为学习自项(非原创), 原项目地址： [React-hacker-news](https://github.com/gokulkrishh/React-hacker-news)

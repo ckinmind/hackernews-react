@@ -1,7 +1,6 @@
 import React from 'react';
 import { Router, Route, Link, IndexRoute, Redirect ,hashHistory, IndexRedirect} from 'react-router';
 
-import Menu from './components/menu';
 import NewContent from './components/feeds/newContent';
 import ShowContent from './components/feeds/showContent';
 import JobsContent from './components/feeds/jobsContent';
@@ -11,18 +10,17 @@ import PageNotFound from './components/errorPage';
 import './styles/master.scss';
 
 
-let Header = React.createClass({
-    render() {
-        return (
-            <div className="header"></div>
-        );
-    }
-});
-
 const App = ({children})=>(
     <div>
-        <Header/>
-        <Menu/>
+        <div className="header"></div>
+        <div className="menu">
+            <ul>
+                <li><Link to='/new' activeClassName="selected"> new </Link></li>
+                <li><Link to='/show' activeClassName="selected"> show </Link></li>
+                <li><Link to='/jobs' activeClassName="selected"> jobs </Link></li>
+                <li><Link to='/about' activeClassName="selected"> about </Link></li>
+            </ul>
+        </div>
         <div className="container">
             <a className="goto-top" onClick={()=> document.body.scrollTop = 0}></a>
             {children}
