@@ -51,7 +51,7 @@ class Profile extends React.Component{
 
                 <div className={this.state.isLoading ? 'hide': 'content-added'}>
                     <h1>
-                        User :<span>{ this.state.user }</span>
+                        User : <span> { this.state.user }</span>
                     </h1>
                     <h1 className={this.state.about ? '': 'hide'}>
                         About : <span>{ this.state.about }</span>

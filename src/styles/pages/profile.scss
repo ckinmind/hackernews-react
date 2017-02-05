@@ -1,0 +1,46 @@
+/*---------------
+   profile页面
+----------------*/
+
+.profile-content {
+    min-height: 250px;
+    position: relative;
+    top: 10px;
+    //cursor: default;
+    padding-top: 1px;
+
+    //覆盖 .content:hover效果
+    &:hover {
+        background: #fff;
+    }
+
+    .spinner-container {
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        display: block;
+        top: 100px;
+    }
+
+    .content-added {
+        min-height: 200px;
+        margin-top: 15px;
+    }
+
+    h1 {
+        display: block;
+        min-height: 35px;
+        margin-top: 10px;
+        margin-left: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #000;
+
+        span {
+            color: #4d5763;
+            word-break: break-all;
+            line-height: 1.5;
+            font-weight: normal;
+        }
+    }
+}

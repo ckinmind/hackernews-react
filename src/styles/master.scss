@@ -21,3 +21,14 @@ MASTER: IMPORTING STYLESHEETS
 @import "mixins";
 @import "layout";
 
+//加载动画及样式
+@import "spinner";
+
+// header 样式
+@import "header";
+
+// page
+@import "./pages/profile";
+@import "./pages/errorPage";
+
+
