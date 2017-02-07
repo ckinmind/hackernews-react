@@ -1,4 +1,5 @@
 # hackernews-react
+![hackernews](https://raw.githubusercontent.com/ckinmind/hackernews-react/master/src/images/screenshot.png)
 hackners的react实现版，在线访问 [https://ckinmind.github.io/hackernews-react](https://ckinmind.github.io/hackernews-react/)
 
 ## 技术栈
@@ -14,10 +15,10 @@ hackners的react实现版，在线访问 [https://ckinmind.github.io/hackernews-
 - HackerNews的 [Api参考](https://github.com/HackerNews/API)
 
 ## 版本更新
-- **[v1.3]**: 样式优化,目录优化 详细更新说明 [issue #11](https://github.com/ckinmind/hackernews-react/issues/11)
-- **[v1.2]**: 修复bug, 分离出组件复用, 详细更新说明 [issue #8](https://github.com/ckinmind/hackernews-react/issues/8)
-- **[v1.1]**: ES6改写, 函数式组件, 优化处理流程, 详细更新说明 [issue #7](https://github.com/ckinmind/hackernews-react/issues/7)
-- **[v1.0]**: 原始版本(基本同原项目),详细更新说明 [issue #5](https://github.com/ckinmind/hackernews-react/issues/5)
+- **[v1.3]**: 样式优化,目录优化 详细更新说明 [issue 11](https://github.com/ckinmind/hackernews-react/issues/11)
+- **[v1.2]**: 修复bug, 分离出组件复用, 详细更新说明 [issue 8](https://github.com/ckinmind/hackernews-react/issues/8)
+- **[v1.1]**: ES6改写, 函数式组件, 优化处理流程, 详细更新说明 [issue 7](https://github.com/ckinmind/hackernews-react/issues/7)
+- **[v1.0]**: 原始版本(基本同原项目),详细更新说明 [issue 5](https://github.com/ckinmind/hackernews-react/issues/5)
 
 ## 如何开始
 ```js
